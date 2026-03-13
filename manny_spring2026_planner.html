@@ -6,112 +6,84 @@
 <title>Manny's Spring 2026 Planner</title>
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Mono:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
-  :root {
-    --bg: #0f0f11;
-    --surface: #18181c;
-    --surface2: #222228;
-    --border: #2e2e38;
-    --text: #f0f0f5;
-    --muted: #6b6b7e;
-    --accent: #7c6af7;
-    --accent2: #f97316;
-    --green: #22c55e;
-    --yellow: #eab308;
-    --red: #ef4444;
-    --blue: #3b82f6;
-    --pink: #ec4899;
-  }
-  * { margin: 0; padding: 0; box-sizing: border-box; }
-  body { background: var(--bg); color: var(--text); font-family: 'DM Mono', monospace; min-height: 100vh; padding: 40px 32px; }
-
-  header { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 40px; flex-wrap: wrap; gap: 16px; }
-  .header-left h1 { font-family: 'Syne', sans-serif; font-size: 2.4rem; font-weight: 800; letter-spacing: -1px; background: linear-gradient(135deg, #f0f0f5 30%, #7c6af7); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
-  .header-left p { color: var(--muted); font-size: 0.78rem; margin-top: 4px; letter-spacing: 0.08em; text-transform: uppercase; }
-  .stats { display: flex; gap: 12px; flex-wrap: wrap; }
-  .stat-pill { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 8px 16px; font-size: 0.72rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.06em; }
-  .stat-pill span { color: var(--text); font-weight: 500; margin-left: 6px; }
-
-  .sync-bar { display: flex; align-items: center; gap: 8px; font-size: 0.72rem; color: var(--muted); margin-bottom: 20px; }
-  .sync-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--muted); transition: background 0.3s; }
-  .sync-dot.syncing { background: var(--yellow); animation: pulse 1s infinite; }
-  .sync-dot.synced { background: var(--green); }
-  .sync-dot.error { background: var(--red); }
-  @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.4} }
-
-  .classes-row { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 28px; }
-  .class-tag { display: flex; align-items: center; gap: 8px; background: var(--surface); border: 1px solid var(--border); border-radius: 6px; padding: 6px 14px; font-size: 0.72rem; letter-spacing: 0.04em; cursor: pointer; transition: border-color 0.2s, opacity 0.2s; }
-  .class-tag:hover { border-color: var(--accent); }
-  .class-tag.inactive { opacity: 0.35; }
-  .class-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
-
-  .toolbar { display: flex; align-items: center; gap: 12px; margin-bottom: 16px; flex-wrap: wrap; }
-  .toolbar input { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 8px 14px; color: var(--text); font-family: 'DM Mono', monospace; font-size: 0.78rem; width: 220px; outline: none; transition: border-color 0.2s; }
-  .toolbar input:focus { border-color: var(--accent); }
-  .toolbar input::placeholder { color: var(--muted); }
-  .toolbar select { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 8px 14px; color: var(--text); font-family: 'DM Mono', monospace; font-size: 0.78rem; outline: none; cursor: pointer; }
-  .btn-add { background: var(--accent); color: white; border: none; border-radius: 8px; padding: 8px 20px; font-family: 'Syne', sans-serif; font-size: 0.8rem; font-weight: 700; cursor: pointer; letter-spacing: 0.04em; transition: opacity 0.2s, transform 0.1s; margin-left: auto; }
-  .btn-add:hover { opacity: 0.85; transform: translateY(-1px); }
-
-  .table-wrap { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; overflow: hidden; }
-  table { width: 100%; border-collapse: collapse; }
-  thead tr { background: var(--surface2); border-bottom: 1px solid var(--border); }
-  th { padding: 12px 16px; text-align: left; font-size: 0.68rem; text-transform: uppercase; letter-spacing: 0.1em; color: var(--muted); font-weight: 500; white-space: nowrap; user-select: none; cursor: pointer; }
-  th:hover { color: var(--text); }
-  tbody tr { border-bottom: 1px solid var(--border); transition: background 0.15s; cursor: pointer; }
-  tbody tr:last-child { border-bottom: none; }
-  tbody tr:hover { background: var(--surface2); }
-  tbody tr.done-row { opacity: 0.45; }
-  td { padding: 13px 16px; font-size: 0.78rem; vertical-align: middle; }
-  .assignment-name { font-family: 'Syne', sans-serif; font-weight: 600; font-size: 0.85rem; max-width: 260px; }
-  .done-row .assignment-name { text-decoration: line-through; }
-
-  .class-badge { display: inline-block; padding: 3px 10px; border-radius: 4px; font-size: 0.68rem; letter-spacing: 0.05em; font-weight: 500; white-space: nowrap; }
-  .status-badge { display: inline-flex; align-items: center; gap: 6px; padding: 4px 10px; border-radius: 6px; font-size: 0.7rem; font-weight: 500; cursor: pointer; border: 1px solid transparent; transition: opacity 0.2s; white-space: nowrap; user-select: none; }
-  .status-badge:hover { opacity: 0.75; }
-  .status-dot { width: 6px; height: 6px; border-radius: 50%; }
-  .s-todo { background: rgba(107,107,126,0.15); color: var(--muted); border-color: rgba(107,107,126,0.3); }
-  .s-todo .status-dot { background: var(--muted); }
-  .s-inprog { background: rgba(234,179,8,0.12); color: var(--yellow); border-color: rgba(234,179,8,0.3); }
-  .s-inprog .status-dot { background: var(--yellow); }
-  .s-done { background: rgba(34,197,94,0.12); color: var(--green); border-color: rgba(34,197,94,0.3); }
-  .s-done .status-dot { background: var(--green); }
-
-  .priority-badge { font-size: 0.7rem; font-weight: 500; padding: 3px 10px; border-radius: 5px; }
-  .p-high { background: rgba(239,68,68,0.12); color: var(--red); }
-  .p-med { background: rgba(249,115,22,0.12); color: var(--accent2); }
-  .p-low { background: rgba(59,130,246,0.12); color: var(--blue); }
-
-  .due-date { font-size: 0.75rem; color: var(--muted); white-space: nowrap; }
-  .due-overdue { color: var(--red); }
-  .due-soon { color: var(--yellow); }
-
-  .del-btn { background: none; border: none; color: var(--muted); cursor: pointer; font-size: 1rem; padding: 4px 8px; border-radius: 4px; transition: color 0.2s, background 0.2s; }
-  .del-btn:hover { color: var(--red); background: rgba(239,68,68,0.1); }
-
-  .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.7); backdrop-filter: blur(4px); z-index: 100; align-items: center; justify-content: center; }
-  .modal-overlay.open { display: flex; }
-  .modal { background: var(--surface); border: 1px solid var(--border); border-radius: 16px; padding: 32px; width: 480px; max-width: 95vw; animation: slideUp 0.2s ease; }
-  @keyframes slideUp { from{transform:translateY(20px);opacity:0} to{transform:translateY(0);opacity:1} }
-  .modal h2 { font-family: 'Syne', sans-serif; font-size: 1.2rem; font-weight: 700; margin-bottom: 24px; }
-  .form-group { margin-bottom: 16px; }
-  .form-group label { display: block; font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted); margin-bottom: 6px; }
-  .form-group input, .form-group select, .form-group textarea { width: 100%; background: var(--surface2); border: 1px solid var(--border); border-radius: 8px; padding: 10px 14px; color: var(--text); font-family: 'DM Mono', monospace; font-size: 0.82rem; outline: none; transition: border-color 0.2s; }
-  .form-group input:focus, .form-group select:focus, .form-group textarea:focus { border-color: var(--accent); }
-  .form-group textarea { resize: vertical; min-height: 70px; }
-  .modal-actions { display: flex; gap: 10px; justify-content: flex-end; margin-top: 24px; }
-  .btn-cancel { background: var(--surface2); border: 1px solid var(--border); border-radius: 8px; padding: 9px 20px; color: var(--muted); font-family: 'DM Mono', monospace; font-size: 0.78rem; cursor: pointer; transition: color 0.2s; }
-  .btn-cancel:hover { color: var(--text); }
-  .btn-save { background: var(--accent); border: none; border-radius: 8px; padding: 9px 24px; color: white; font-family: 'Syne', sans-serif; font-size: 0.82rem; font-weight: 700; cursor: pointer; transition: opacity 0.2s; }
-  .btn-save:hover { opacity: 0.85; }
-
-  .empty-state { text-align: center; padding: 60px 20px; color: var(--muted); font-size: 0.82rem; }
-  .empty-state div { font-size: 2rem; margin-bottom: 10px; }
-
-  .loading { text-align: center; padding: 60px 20px; color: var(--muted); font-size: 0.82rem; }
+  :root{--bg:#0f0f11;--surface:#18181c;--surface2:#222228;--border:#2e2e38;--text:#f0f0f5;--muted:#6b6b7e;--accent:#7c6af7;--accent2:#f97316;--green:#22c55e;--yellow:#eab308;--red:#ef4444;--blue:#3b82f6;--pink:#ec4899}
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{background:var(--bg);color:var(--text);font-family:'DM Mono',monospace;min-height:100vh;padding:40px 32px}
+  header{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:40px;flex-wrap:wrap;gap:16px}
+  .header-left h1{font-family:'Syne',sans-serif;font-size:2.4rem;font-weight:800;letter-spacing:-1px;background:linear-gradient(135deg,#f0f0f5 30%,#7c6af7);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+  .header-left p{color:var(--muted);font-size:.78rem;margin-top:4px;letter-spacing:.08em;text-transform:uppercase}
+  .stats{display:flex;gap:12px;flex-wrap:wrap}
+  .stat-pill{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:8px 16px;font-size:.72rem;color:var(--muted);text-transform:uppercase;letter-spacing:.06em}
+  .stat-pill span{color:var(--text);font-weight:500;margin-left:6px}
+  .sync-bar{display:flex;align-items:center;gap:8px;font-size:.72rem;color:var(--muted);margin-bottom:20px}
+  .sync-dot{width:7px;height:7px;border-radius:50%;background:var(--muted);transition:background .3s}
+  .sync-dot.syncing{background:var(--yellow);animation:pulse 1s infinite}
+  .sync-dot.synced{background:var(--green)}
+  .sync-dot.error{background:var(--red)}
+  @keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
+  .classes-row{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:28px}
+  .class-tag{display:flex;align-items:center;gap:8px;background:var(--surface);border:1px solid var(--border);border-radius:6px;padding:6px 14px;font-size:.72rem;cursor:pointer;transition:border-color .2s,opacity .2s}
+  .class-tag:hover{border-color:var(--accent)}
+  .class-tag.inactive{opacity:.35}
+  .class-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+  .toolbar{display:flex;align-items:center;gap:12px;margin-bottom:16px;flex-wrap:wrap}
+  .toolbar input{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:8px 14px;color:var(--text);font-family:'DM Mono',monospace;font-size:.78rem;width:220px;outline:none;transition:border-color .2s}
+  .toolbar input:focus{border-color:var(--accent)}
+  .toolbar input::placeholder{color:var(--muted)}
+  .toolbar select{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:8px 14px;color:var(--text);font-family:'DM Mono',monospace;font-size:.78rem;outline:none;cursor:pointer}
+  .btn-add{background:var(--accent);color:#fff;border:none;border-radius:8px;padding:8px 20px;font-family:'Syne',sans-serif;font-size:.8rem;font-weight:700;cursor:pointer;letter-spacing:.04em;transition:opacity .2s,transform .1s;margin-left:auto}
+  .btn-add:hover{opacity:.85;transform:translateY(-1px)}
+  .table-wrap{background:var(--surface);border:1px solid var(--border);border-radius:12px;overflow:hidden}
+  table{width:100%;border-collapse:collapse}
+  thead tr{background:var(--surface2);border-bottom:1px solid var(--border)}
+  th{padding:12px 16px;text-align:left;font-size:.68rem;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);font-weight:500;white-space:nowrap;user-select:none;cursor:pointer}
+  th:hover{color:var(--text)}
+  tbody tr{border-bottom:1px solid var(--border);transition:background .15s;cursor:pointer}
+  tbody tr:last-child{border-bottom:none}
+  tbody tr:hover{background:var(--surface2)}
+  tbody tr.done-row{opacity:.45}
+  td{padding:13px 16px;font-size:.78rem;vertical-align:middle}
+  .assignment-name{font-family:'Syne',sans-serif;font-weight:600;font-size:.85rem;max-width:280px}
+  .done-row .assignment-name{text-decoration:line-through}
+  .class-badge{display:inline-block;padding:3px 10px;border-radius:4px;font-size:.68rem;font-weight:500;white-space:nowrap}
+  .status-badge{display:inline-flex;align-items:center;gap:6px;padding:4px 10px;border-radius:6px;font-size:.7rem;font-weight:500;cursor:pointer;border:1px solid transparent;transition:opacity .2s;white-space:nowrap;user-select:none}
+  .status-badge:hover{opacity:.75}
+  .status-dot{width:6px;height:6px;border-radius:50%}
+  .s-todo{background:rgba(107,107,126,.15);color:var(--muted);border-color:rgba(107,107,126,.3)}
+  .s-todo .status-dot{background:var(--muted)}
+  .s-inprog{background:rgba(234,179,8,.12);color:var(--yellow);border-color:rgba(234,179,8,.3)}
+  .s-inprog .status-dot{background:var(--yellow)}
+  .s-done{background:rgba(34,197,94,.12);color:var(--green);border-color:rgba(34,197,94,.3)}
+  .s-done .status-dot{background:var(--green)}
+  .priority-badge{font-size:.7rem;font-weight:500;padding:3px 10px;border-radius:5px}
+  .p-high{background:rgba(239,68,68,.12);color:var(--red)}
+  .p-med{background:rgba(249,115,22,.12);color:var(--accent2)}
+  .p-low{background:rgba(59,130,246,.12);color:var(--blue)}
+  .due-date{font-size:.75rem;color:var(--muted);white-space:nowrap}
+  .due-overdue{color:var(--red)}
+  .due-soon{color:var(--yellow)}
+  .del-btn{background:none;border:none;color:var(--muted);cursor:pointer;font-size:1rem;padding:4px 8px;border-radius:4px;transition:color .2s,background .2s}
+  .del-btn:hover{color:var(--red);background:rgba(239,68,68,.1)}
+  .modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.7);backdrop-filter:blur(4px);z-index:100;align-items:center;justify-content:center}
+  .modal-overlay.open{display:flex}
+  .modal{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:32px;width:480px;max-width:95vw;animation:slideUp .2s ease}
+  @keyframes slideUp{from{transform:translateY(20px);opacity:0}to{transform:translateY(0);opacity:1}}
+  .modal h2{font-family:'Syne',sans-serif;font-size:1.2rem;font-weight:700;margin-bottom:24px}
+  .form-group{margin-bottom:16px}
+  .form-group label{display:block;font-size:.7rem;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);margin-bottom:6px}
+  .form-group input,.form-group select,.form-group textarea{width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:10px 14px;color:var(--text);font-family:'DM Mono',monospace;font-size:.82rem;outline:none;transition:border-color .2s}
+  .form-group input:focus,.form-group select:focus,.form-group textarea:focus{border-color:var(--accent)}
+  .form-group textarea{resize:vertical;min-height:70px}
+  .modal-actions{display:flex;gap:10px;justify-content:flex-end;margin-top:24px}
+  .btn-cancel{background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:9px 20px;color:var(--muted);font-family:'DM Mono',monospace;font-size:.78rem;cursor:pointer}
+  .btn-save{background:var(--accent);border:none;border-radius:8px;padding:9px 24px;color:#fff;font-family:'Syne',sans-serif;font-size:.82rem;font-weight:700;cursor:pointer}
+  .btn-save:hover{opacity:.85}
+  .empty-state{text-align:center;padding:60px 20px;color:var(--muted);font-size:.82rem}
+  .empty-state div{font-size:2rem;margin-bottom:10px}
+  .loading{text-align:center;padding:60px 20px;color:var(--muted);font-size:.82rem}
 </style>
 </head>
 <body>
-
 <header>
   <div class="header-left">
     <h1>📚 Spring 2026 Planner</h1>
@@ -123,349 +95,275 @@
     <div class="stat-pill">Done <span id="stat-done">0</span></div>
   </div>
 </header>
-
-<div class="sync-bar">
-  <div class="sync-dot" id="syncDot"></div>
-  <span id="syncLabel">Connecting to Google Sheets...</span>
-</div>
-
+<div class="sync-bar"><div class="sync-dot" id="syncDot"></div><span id="syncLabel">Connecting to Google Sheets...</span></div>
 <div class="classes-row" id="classFilters"></div>
-
 <div class="toolbar">
   <input type="text" id="searchInput" placeholder="Search assignments..." oninput="renderTable()">
-  <select id="filterStatus" onchange="renderTable()">
-    <option value="">All Statuses</option>
-    <option value="Not Started">Not Started</option>
-    <option value="In Progress">In Progress</option>
-    <option value="Done">Done</option>
-  </select>
-  <select id="filterPriority" onchange="renderTable()">
-    <option value="">All Priorities</option>
-    <option value="High">High</option>
-    <option value="Medium">Medium</option>
-    <option value="Low">Low</option>
-  </select>
+  <select id="filterStatus" onchange="renderTable()"><option value="">All Statuses</option><option>Not Started</option><option>In Progress</option><option>Done</option></select>
+  <select id="filterPriority" onchange="renderTable()"><option value="">All Priorities</option><option>High</option><option>Medium</option><option>Low</option></select>
   <button class="btn-add" onclick="openModal()">+ Add Assignment</button>
 </div>
-
 <div class="table-wrap">
-  <table>
-    <thead>
-      <tr>
-        <th onclick="sortBy('name')">Assignment</th>
-        <th onclick="sortBy('class')">Class</th>
-        <th onclick="sortBy('due')">Due Date</th>
-        <th onclick="sortBy('priority')">Priority</th>
-        <th onclick="sortBy('status')">Status</th>
-        <th></th>
-      </tr>
-    </thead>
-    <tbody id="tableBody"></tbody>
-  </table>
+  <table><thead><tr>
+    <th onclick="sortBy('name')">Assignment</th>
+    <th onclick="sortBy('class')">Class</th>
+    <th onclick="sortBy('due')">Due Date</th>
+    <th onclick="sortBy('priority')">Priority</th>
+    <th onclick="sortBy('status')">Status</th>
+    <th></th>
+  </tr></thead><tbody id="tableBody"></tbody></table>
   <div class="loading" id="loadingState">Loading your assignments...</div>
-  <div class="empty-state" id="emptyState" style="display:none">
-    <div>📝</div>
-    No assignments yet — hit <strong>+ Add Assignment</strong> to get started.
-  </div>
+  <div class="empty-state" id="emptyState" style="display:none"><div>📝</div>No assignments found.</div>
 </div>
-
-<!-- MODAL -->
 <div class="modal-overlay" id="modalOverlay">
   <div class="modal">
     <h2 id="modalTitle">New Assignment</h2>
-    <div class="form-group">
-      <label>Assignment Name *</label>
-      <input type="text" id="f-name" placeholder="e.g. Chapter 5 Homework">
-    </div>
-    <div class="form-group">
-      <label>Class *</label>
-      <select id="f-class">
-        <option value="">Select class...</option>
-        <option>Business Ethics (MGT-3100)</option>
-        <option>College Algebra (MAT-1805)</option>
-        <option>Creating Breakthrough Innovations (ENT-2031)</option>
-        <option>Managerial Accounting (ACC-2150)</option>
-        <option>Marketing (MKT-2200)</option>
-      </select>
-    </div>
-    <div class="form-group">
-      <label>Due Date</label>
-      <input type="date" id="f-due">
-    </div>
-    <div class="form-group">
-      <label>Priority</label>
-      <select id="f-priority">
-        <option value="Medium">Medium</option>
-        <option value="High">High</option>
-        <option value="Low">Low</option>
-      </select>
-    </div>
-    <div class="form-group">
-      <label>Status</label>
-      <select id="f-status">
-        <option value="Not Started">Not Started</option>
-        <option value="In Progress">In Progress</option>
-        <option value="Done">Done</option>
-      </select>
-    </div>
-    <div class="form-group">
-      <label>Notes</label>
-      <textarea id="f-notes" placeholder="Any extra details..."></textarea>
-    </div>
-    <div class="modal-actions">
-      <button class="btn-cancel" onclick="closeModal()">Cancel</button>
-      <button class="btn-save" onclick="saveAssignment()">Save</button>
-    </div>
+    <div class="form-group"><label>Assignment Name *</label><input type="text" id="f-name" placeholder="e.g. Chapter 5 Homework"></div>
+    <div class="form-group"><label>Class *</label><select id="f-class"><option value="">Select class...</option><option>Business Ethics (MGT-3100)</option><option>College Algebra (MAT-1805)</option><option>Creating Breakthrough Innovations (ENT-2031)</option><option>Managerial Accounting (ACC-2150)</option><option>Marketing (MKT-2200)</option></select></div>
+    <div class="form-group"><label>Due Date</label><input type="date" id="f-due"></div>
+    <div class="form-group"><label>Priority</label><select id="f-priority"><option value="Medium">Medium</option><option value="High">High</option><option value="Low">Low</option></select></div>
+    <div class="form-group"><label>Status</label><select id="f-status"><option value="Not Started">Not Started</option><option value="In Progress">In Progress</option><option value="Done">Done</option></select></div>
+    <div class="form-group"><label>Notes</label><textarea id="f-notes" placeholder="Any extra details..."></textarea></div>
+    <div class="modal-actions"><button class="btn-cancel" onclick="closeModal()">Cancel</button><button class="btn-save" onclick="saveAssignment()">Save</button></div>
   </div>
 </div>
-
 <script>
-const API_URL = "https://script.google.com/macros/s/AKfycbw9g4hdKjev0jb8hOokNRuZ-GIoAH63CxJWtwHa1Tcxnctj1Co9qz4E8OKYRvHI87A0/exec";
-
-const CLASSES = [
-  { name: "Business Ethics (MGT-3100)", color: "#ec4899", short: "Ethics" },
-  { name: "College Algebra (MAT-1805)", color: "#3b82f6", short: "Algebra" },
-  { name: "Creating Breakthrough Innovations (ENT-2031)", color: "#f97316", short: "Innovations" },
-  { name: "Managerial Accounting (ACC-2150)", color: "#22c55e", short: "Accounting" },
-  { name: "Marketing (MKT-2200)", color: "#7c6af7", short: "Marketing" },
+const API_URL="https://script.google.com/macros/s/AKfycbw9g4hdKjev0jb8hOokNRuZ-GIoAH63CxJWtwHa1Tcxnctj1Co9qz4E8OKYRvHI87A0/exec";
+const CLASSES=[
+  {name:"Business Ethics (MGT-3100)",color:"#ec4899",short:"Ethics"},
+  {name:"College Algebra (MAT-1805)",color:"#3b82f6",short:"Algebra"},
+  {name:"Creating Breakthrough Innovations (ENT-2031)",color:"#f97316",short:"Innovations"},
+  {name:"Managerial Accounting (ACC-2150)",color:"#22c55e",short:"Accounting"},
+  {name:"Marketing (MKT-2200)",color:"#7c6af7",short:"Marketing"}
 ];
 
-let assignments = [];
-let nextId = 1;
-let editingId = null;
-let sortKey = "due";
-let sortDir = 1;
-let activeFilters = new Set(CLASSES.map(c => c.name));
-let saveTimeout = null;
+// Week 1 = Jan 5. Each week = +7 days.
+// Module structure for Ethics: discussions due Week 10,12,14,16 Thursdays (2nd week of each module)
+// Week 10 Thu = Mar 19 | Week 12 Thu = Apr 2 | Week 14 Thu = Apr 16 | Week 16 Thu = Apr 30
+// Midterm due Week 8 = Mar 8 (already passed) | Case Study Week 7 = Mar 1 (already passed) | Final Week 16
 
-// SYNC UI
-function setSyncState(state, label) {
-  const dot = document.getElementById("syncDot");
-  const lbl = document.getElementById("syncLabel");
-  dot.className = "sync-dot " + state;
-  lbl.textContent = label;
-}
+const SEED=[
+  // ── BUSINESS ETHICS (MGT-3100) ──────────────────────────────────────────
+  // Module 5 (Weeks 9-10): Discussion due Week 10 Thursday = Mar 19
+  {id:1,name:"Discussion Board 5 — Ethical Theories",class:"Business Ethics (MGT-3100)",due:"2026-03-19",priority:"High",status:"Not Started",notes:"Due Week 10 Thursday 11:59pm — Aristotle, Kant, or Mill: which ethical theory resonates?"},
+  // Module 6 (Weeks 11-12): Discussion due Week 12 Thursday = Apr 2
+  {id:2,name:"Discussion Board 6 — Character & Commerce",class:"Business Ethics (MGT-3100)",due:"2026-04-02",priority:"High",status:"Not Started",notes:"Due Week 12 Thursday 11:59pm — Bob Walker virtues & Christian faith in business"},
+  // Module 7 (Weeks 13-14): Discussion due Week 14 Thursday = Apr 16
+  {id:3,name:"Discussion Board 7 — Virtues of Character I",class:"Business Ethics (MGT-3100)",due:"2026-04-16",priority:"High",status:"Not Started",notes:"Due Week 14 Thursday 11:59pm — Faith & Co short films, business virtues"},
+  // Module 8 (Weeks 15-16): Discussion due Week 16 Thursday = Apr 30
+  {id:4,name:"Discussion Board 8 — Peer Case Study Review",class:"Business Ethics (MGT-3100)",due:"2026-04-30",priority:"High",status:"Not Started",notes:"Due Week 16 Thursday 11:59pm — Answer 3 Qs about colleague's case study"},
+  // Final Exam Week 16
+  {id:5,name:"Final Exam",class:"Business Ethics (MGT-3100)",due:"2026-05-03",priority:"High",status:"Not Started",notes:"Week 16 Sunday — Essay exam: Weber, Hayek, Ferguson, virtue theory"},
 
-// LOAD from Google Sheets
-async function loadFromSheets() {
-  setSyncState("syncing", "Loading from Google Sheets...");
-  try {
-    const res = await fetch(API_URL + "?action=getAll");
-    const data = await res.json();
-    if (data.length > 0) {
-      assignments = data.map(a => ({ ...a, id: Number(a.id) }));
-      nextId = Math.max(...assignments.map(a => a.id)) + 1;
-    } else {
-      // Seed with default assignments on first load
-      assignments = [
-        { id: 1, name: "Chapter 1 Review Questions", class: "Business Ethics (MGT-3100)", due: "2026-03-20", priority: "Medium", status: "Not Started", notes: "" },
-        { id: 2, name: "Algebra Problem Set 3", class: "College Algebra (MAT-1805)", due: "2026-03-18", priority: "High", status: "In Progress", notes: "" },
-        { id: 3, name: "Innovation Case Study", class: "Creating Breakthrough Innovations (ENT-2031)", due: "2026-03-25", priority: "High", status: "Not Started", notes: "" },
-        { id: 4, name: "Stockholders' Equity Journal Entries", class: "Managerial Accounting (ACC-2150)", due: "2026-03-17", priority: "High", status: "In Progress", notes: "Morrow Enterprises problem" },
-        { id: 5, name: "Marketing Strategy Analysis", class: "Marketing (MKT-2200)", due: "2026-03-28", priority: "Medium", status: "Not Started", notes: "" },
-      ];
-      nextId = 6;
-      await saveToSheets();
-    }
-    document.getElementById("loadingState").style.display = "none";
-    setSyncState("synced", "Synced with Google Sheets ✓");
-    renderClassFilters();
-    renderTable();
-  } catch (err) {
-    setSyncState("error", "Could not connect to Google Sheets");
-    document.getElementById("loadingState").textContent = "Failed to load. Check your connection.";
+  // ── COLLEGE ALGEBRA (MAT-1805) ───────────────────────────────────────────
+  {id:10,name:"4.4 Real Zeros",class:"College Algebra (MAT-1805)",due:"2026-03-16",priority:"High",status:"Not Started",notes:"MyLab Math — due 2:00pm"},
+  {id:11,name:"4.5 Fundamental Theorem of Algebra",class:"College Algebra (MAT-1805)",due:"2026-03-20",priority:"High",status:"Not Started",notes:"MyLab Math — due 2:00pm"},
+  {id:12,name:"4.6 Rational Functions",class:"College Algebra (MAT-1805)",due:"2026-03-25",priority:"Medium",status:"Not Started",notes:"MyLab Math — due 2:00pm"},
+  {id:13,name:"4.7 Rational Equations & Inequalities",class:"College Algebra (MAT-1805)",due:"2026-03-27",priority:"Medium",status:"Not Started",notes:"MyLab Math — due 2:00pm"},
+  {id:14,name:"4.8 Radical Expressions & Power Functions",class:"College Algebra (MAT-1805)",due:"2026-03-30",priority:"Medium",status:"Not Started",notes:"MyLab Math — due 2:00pm"},
+  {id:15,name:"5.1 Combining Functions",class:"College Algebra (MAT-1805)",due:"2026-04-10",priority:"Medium",status:"Not Started",notes:"MyLab Math — due 2:00pm"},
+  {id:16,name:"5.2 Inverse Functions",class:"College Algebra (MAT-1805)",due:"2026-04-13",priority:"Medium",status:"Not Started",notes:"MyLab Math — due 2:00pm"},
+  {id:17,name:"5.3 Exponential Functions",class:"College Algebra (MAT-1805)",due:"2026-04-15",priority:"Medium",status:"Not Started",notes:"MyLab Math — due 2:00pm"},
+  {id:18,name:"5.4 Logarithmic Functions",class:"College Algebra (MAT-1805)",due:"2026-04-17",priority:"Medium",status:"Not Started",notes:"MyLab Math — due 2:00pm"},
+  {id:19,name:"5.5 Properties of Logarithms",class:"College Algebra (MAT-1805)",due:"2026-04-20",priority:"Medium",status:"Not Started",notes:"MyLab Math — due 2:00pm"},
+  {id:20,name:"5.6 Exponential & Logarithmic Equations",class:"College Algebra (MAT-1805)",due:"2026-04-22",priority:"Medium",status:"Not Started",notes:"MyLab Math — due 2:00pm"},
+  {id:21,name:"9.1 Systems of Equations (Two Variables)",class:"College Algebra (MAT-1805)",due:"2026-04-24",priority:"Medium",status:"Not Started",notes:"MyLab Math — due 2:00pm"},
+  {id:22,name:"9.3 Systems of Equations (Three Variables)",class:"College Algebra (MAT-1805)",due:"2026-04-27",priority:"Medium",status:"Not Started",notes:"MyLab Math — due 1:00pm"},
+  {id:23,name:"Final Exam",class:"College Algebra (MAT-1805)",due:"2026-04-27",priority:"High",status:"Not Started",notes:"Monday April 27, 1:00pm-2:40pm — Comprehensive"},
+
+  // ── CREATING BREAKTHROUGH INNOVATIONS (ENT-2031) ─────────────────────────
+  // Week 9 (Mar 9): currently here
+  {id:30,name:"Class Discussion 9",class:"Creating Breakthrough Innovations (ENT-2031)",due:"2026-03-12",priority:"High",status:"Not Started",notes:"Due Thursday 11:59pm — Why is concept of time important for understanding change?"},
+  {id:31,name:"Top 5 Takeaways — Module 9",class:"Creating Breakthrough Innovations (ENT-2031)",due:"2026-03-15",priority:"Medium",status:"Not Started",notes:"Due Sunday 11:59pm — 250 words max, Blackboard"},
+  // Week 10 (Mar 16)
+  {id:32,name:"Class Discussion 10",class:"Creating Breakthrough Innovations (ENT-2031)",due:"2026-03-19",priority:"High",status:"Not Started",notes:"Due Thursday 11:59pm — Country's future in creativity-driven economy"},
+  {id:33,name:"Top 5 Takeaways — Module 10",class:"Creating Breakthrough Innovations (ENT-2031)",due:"2026-03-22",priority:"Medium",status:"Not Started",notes:"Due Sunday 11:59pm"},
+  {id:34,name:"Assignment #2: Organizational Metaphor Analysis",class:"Creating Breakthrough Innovations (ENT-2031)",due:"2026-03-20",priority:"High",status:"Not Started",notes:"Due Friday Week 10 by 11:59pm — 2-page single-spaced APA paper, CUC metaphor"},
+  // Week 11 (Mar 23)
+  {id:35,name:"Class Discussion 11",class:"Creating Breakthrough Innovations (ENT-2031)",due:"2026-03-26",priority:"High",status:"Not Started",notes:"Due Thursday 11:59pm — Extrinsic vs intrinsic motivation for creativity"},
+  {id:36,name:"Top 5 Takeaways — Module 11",class:"Creating Breakthrough Innovations (ENT-2031)",due:"2026-03-29",priority:"Medium",status:"Not Started",notes:"Due Sunday 11:59pm"},
+  // Week 12 (Mar 30) — Easter break Apr 3
+  {id:37,name:"Class Discussion 12",class:"Creating Breakthrough Innovations (ENT-2031)",due:"2026-04-02",priority:"High",status:"Not Started",notes:"Due Thursday 11:59pm — Why do teams fail? Brainwriting vs brainstorming"},
+  {id:38,name:"Top 5 Takeaways — Module 12",class:"Creating Breakthrough Innovations (ENT-2031)",due:"2026-04-05",priority:"Medium",status:"Not Started",notes:"Due Sunday 11:59pm"},
+  // Week 13 (Apr 6) — Easter break Apr 6
+  {id:39,name:"Class Discussion 13",class:"Creating Breakthrough Innovations (ENT-2031)",due:"2026-04-09",priority:"High",status:"Not Started",notes:"Due Thursday 11:59pm — Leader vs manager, Zenger & Folkman 10 fatal flaws"},
+  {id:40,name:"Top 5 Takeaways — Module 13",class:"Creating Breakthrough Innovations (ENT-2031)",due:"2026-04-12",priority:"Medium",status:"Not Started",notes:"Due Sunday 11:59pm"},
+  // Week 14 (Apr 13)
+  {id:41,name:"Class Discussion 14",class:"Creating Breakthrough Innovations (ENT-2031)",due:"2026-04-16",priority:"High",status:"Not Started",notes:"Due Thursday 11:59pm — Designing infrastructure for creativity & innovation"},
+  {id:42,name:"Top 5 Takeaways — Module 14",class:"Creating Breakthrough Innovations (ENT-2031)",due:"2026-04-19",priority:"Medium",status:"Not Started",notes:"Due Sunday 11:59pm"},
+  // Week 15 (Apr 20)
+  {id:43,name:"Class Discussion 15",class:"Creating Breakthrough Innovations (ENT-2031)",due:"2026-04-23",priority:"High",status:"Not Started",notes:"Due Thursday 11:59pm — Building cultures for creative/innovative performance"},
+  {id:44,name:"Top 5 Takeaways — Module 15",class:"Creating Breakthrough Innovations (ENT-2031)",due:"2026-04-26",priority:"Medium",status:"Not Started",notes:"Due Sunday 11:59pm"},
+  {id:45,name:"Assignment #3: World-Changing Idea",class:"Creating Breakthrough Innovations (ENT-2031)",due:"2026-04-24",priority:"High",status:"Not Started",notes:"Due Friday Week 15 by 11:59pm — 5+ pages, team paper, APA, 10 sources"},
+  // Week 16 (Apr 27)
+  {id:46,name:"Final Exam (Chapters 8-15)",class:"Creating Breakthrough Innovations (ENT-2031)",due:"2026-04-27",priority:"High",status:"Not Started",notes:"Monday April 27, 8:00am-9:40am CST"},
+
+  // ── MANAGERIAL ACCOUNTING (ACC-2150) 8-week started Mar 9 ───────────────
+  {id:50,name:"Assignment #1: P15-1A, P15-5A, P16-1A, P15-2A, P15-4A",class:"Managerial Accounting (ACC-2150)",due:"2026-03-15",priority:"High",status:"Not Started",notes:"Week 1 — CengageNow: Ch.15 Financial Statement Analysis & Ch.16 Job Order Cost"},
+  {id:51,name:"Discussion Forum #1 & #2",class:"Managerial Accounting (ACC-2150)",due:"2026-03-15",priority:"Medium",status:"Not Started",notes:"Week 1 — Financial vs Managerial Accounting + What is Job Order Costing?"},
+  {id:52,name:"Assignment #2: PR17-2A, PR17-3A, PR18-2A, PR18-4A",class:"Managerial Accounting (ACC-2150)",due:"2026-03-22",priority:"High",status:"Not Started",notes:"Week 2 — CengageNow: Ch.17 Process Costing & Ch.18 Activity-Based Costing"},
+  {id:53,name:"Discussion Forum #3 & #4",class:"Managerial Accounting (ACC-2150)",due:"2026-03-22",priority:"Medium",status:"Not Started",notes:"Week 2 — Process vs Job Order Costing + What is ABC?"},
+  {id:54,name:"Assignment #3: PR19-1A, PR19-3A, PR20-1A, PR20-3A, PR20-4A",class:"Managerial Accounting (ACC-2150)",due:"2026-03-29",priority:"High",status:"Not Started",notes:"Week 3 — CengageNow: Ch.19 Support Cost Allocation & Ch.20 CVP Analysis"},
+  {id:55,name:"Discussion Forum #5 & #6",class:"Managerial Accounting (ACC-2150)",due:"2026-03-29",priority:"Medium",status:"Not Started",notes:"Week 3 — Joint cost methods + Breakeven analysis example"},
+  {id:56,name:"Exam 1 (Chapters 15-18)",class:"Managerial Accounting (ACC-2150)",due:"2026-03-29",priority:"High",status:"Not Started",notes:"Week 3 — 100 points: Financial Statements, Job Order, Process, ABC Costing"},
+  {id:57,name:"Assignment #4: PR21-1A, PR21-3A, PR22-1A, PR22-4A",class:"Managerial Accounting (ACC-2150)",due:"2026-04-05",priority:"High",status:"Not Started",notes:"Week 4 — CengageNow: Ch.21 Variable Costing & Ch.22 Budgeting"},
+  {id:58,name:"Discussion Forum #7 & #8",class:"Managerial Accounting (ACC-2150)",due:"2026-04-05",priority:"Medium",status:"Not Started",notes:"Week 4 — Absorption vs Variable Costing + Personal budgeting"},
+  {id:59,name:"Assignment #5: PR23-1A, PR23-2A, PR23-3A, PR24-2A, PR24-5A",class:"Managerial Accounting (ACC-2150)",due:"2026-04-12",priority:"High",status:"Not Started",notes:"Week 5 — CengageNow: Ch.23 Standard Cost/Variances & Ch.24 Decentralized Ops"},
+  {id:60,name:"Discussion Forum #9 & #10",class:"Managerial Accounting (ACC-2150)",due:"2026-04-12",priority:"Medium",status:"Not Started",notes:"Week 5 — Standard cost responsibility + Centralized vs decentralized"},
+  {id:61,name:"Assignment #6: PR25-1A, PR25-4A, PR26-2A, PR25-3A",class:"Managerial Accounting (ACC-2150)",due:"2026-04-19",priority:"High",status:"Not Started",notes:"Week 6 — CengageNow: Ch.25 Product Pricing & Ch.26 Capital Investment"},
+  {id:62,name:"Discussion Forum #11 & #12",class:"Managerial Accounting (ACC-2150)",due:"2026-04-19",priority:"Medium",status:"Not Started",notes:"Week 6 — Target cost vs cost-plus pricing + Payback/NPV/IRR"},
+  {id:63,name:"Exam 2 (Chapters 19-22)",class:"Managerial Accounting (ACC-2150)",due:"2026-04-19",priority:"High",status:"Not Started",notes:"Week 6 — 100 points: Support Cost, CVP, Variable Costing, Budgeting"},
+  {id:64,name:"Assignment #7: PR27-2A, PR27-3A, PR27-4A",class:"Managerial Accounting (ACC-2150)",due:"2026-04-26",priority:"High",status:"Not Started",notes:"Week 7 — CengageNow: Ch.27 Lean Manufacturing"},
+  {id:65,name:"Discussion Forum #13",class:"Managerial Accounting (ACC-2150)",due:"2026-04-26",priority:"Medium",status:"Not Started",notes:"Week 7 — Lean philosophy: benefits and costs"},
+  {id:66,name:"Assignment #8: PR28-2A, PR28-3A, PR28-4A",class:"Managerial Accounting (ACC-2150)",due:"2026-05-03",priority:"High",status:"Not Started",notes:"Week 8 — CengageNow: Ch.28 Balanced Scorecard & Social Responsibility"},
+  {id:67,name:"Discussion Forum #14",class:"Managerial Accounting (ACC-2150)",due:"2026-05-03",priority:"Medium",status:"Not Started",notes:"Week 8 — How can balanced scorecard address CSR?"},
+  {id:68,name:"Exam 3 (Chapters 23-28)",class:"Managerial Accounting (ACC-2150)",due:"2026-05-03",priority:"High",status:"Not Started",notes:"Week 8 — 100 points: Standard Cost, Decentralized Ops, Pricing, Capital Investment, Lean, BSC"},
+
+  // ── MARKETING (MKT-2200) ─────────────────────────────────────────────────
+  {id:70,name:"Marketing Assignments — Add from Blackboard",class:"Marketing (MKT-2200)",due:"",priority:"Medium",status:"Not Started",notes:"No syllabus uploaded yet — add your MKT-2200 assignments here"}
+];
+
+let assignments=[],nextId=100,editingId=null,sortKey="due",sortDir=1,saveTimeout=null;
+let activeFilters=new Set(CLASSES.map(c=>c.name));
+
+function setSyncState(s,l){document.getElementById("syncDot").className="sync-dot "+s;document.getElementById("syncLabel").textContent=l}
+
+async function loadFromSheets(){
+  setSyncState("syncing","Loading from Google Sheets...");
+  try{
+    const res=await fetch(API_URL+"?action=getAll");
+    const data=await res.json();
+    if(data.length>0){assignments=data.map(a=>({...a,id:Number(a.id)}));nextId=Math.max(...assignments.map(a=>a.id))+1;}
+    else{assignments=SEED.map(a=>({...a}));nextId=Math.max(...assignments.map(a=>a.id))+1;await saveToSheets();}
+    document.getElementById("loadingState").style.display="none";
+    setSyncState("synced","Synced with Google Sheets ✓");
+    renderClassFilters();renderTable();
+  }catch(err){
+    setSyncState("error","Could not connect — showing local data");
+    assignments=SEED.map(a=>({...a}));nextId=Math.max(...assignments.map(a=>a.id))+1;
+    document.getElementById("loadingState").style.display="none";
+    renderClassFilters();renderTable();
   }
 }
 
-// SAVE to Google Sheets (debounced)
-async function saveToSheets() {
-  setSyncState("syncing", "Saving...");
-  try {
-    await fetch(API_URL, {
-      method: "POST",
-      body: JSON.stringify({ action: "save", assignments }),
-    });
-    setSyncState("synced", "Saved to Google Sheets ✓");
-  } catch (err) {
-    setSyncState("error", "Save failed — check connection");
-  }
+async function saveToSheets(){
+  setSyncState("syncing","Saving...");
+  try{await fetch(API_URL,{method:"POST",body:JSON.stringify({action:"save",assignments})});setSyncState("synced","Saved to Google Sheets ✓");}
+  catch(err){setSyncState("error","Save failed — check connection");}
 }
 
-function scheduleSave() {
-  clearTimeout(saveTimeout);
-  saveTimeout = setTimeout(saveToSheets, 800);
+function scheduleSave(){clearTimeout(saveTimeout);saveTimeout=setTimeout(saveToSheets,800);}
+function getClassMeta(n){return CLASSES.find(c=>c.name===n)||{color:"#6b6b7e",short:n};}
+
+function formatDue(d){
+  if(!d)return'<span class="due-date">—</span>';
+  const dt=new Date(d+"T00:00:00"),today=new Date();today.setHours(0,0,0,0);
+  const diff=Math.round((dt-today)/86400000),label=dt.toLocaleDateString("en-US",{month:"short",day:"numeric"});
+  let cls="due-date",tag="";
+  if(diff<0){cls="due-date due-overdue";tag=" ⚠️";}else if(diff<=3){cls="due-date due-soon";tag=" 🔥";}
+  return`<span class="${cls}">${label}${tag}</span>`;
 }
 
-function getClassMeta(name) {
-  return CLASSES.find(c => c.name === name) || { color: "#6b6b7e", short: name };
+function statusClass(s){return s==="Done"?"s-done":s==="In Progress"?"s-inprog":"s-todo";}
+function priorityClass(p){return p==="High"?"p-high":p==="Low"?"p-low":"p-med";}
+
+function cycleStatus(id){
+  const a=assignments.find(x=>x.id===id);if(!a)return;
+  const c=["Not Started","In Progress","Done"];
+  a.status=c[(c.indexOf(a.status)+1)%3];renderTable();scheduleSave();
 }
 
-function formatDue(dateStr) {
-  if (!dateStr) return '<span class="due-date">—</span>';
-  const d = new Date(dateStr + "T00:00:00");
-  const today = new Date(); today.setHours(0,0,0,0);
-  const diff = Math.round((d - today) / 86400000);
-  const label = d.toLocaleDateString("en-US", { month: "short", day: "numeric" });
-  let cls = "due-date", tag = "";
-  if (diff < 0) { cls = "due-date due-overdue"; tag = " ⚠️"; }
-  else if (diff <= 3) { cls = "due-date due-soon"; tag = " 🔥"; }
-  return `<span class="${cls}">${label}${tag}</span>`;
-}
+function sortBy(key){if(sortKey===key)sortDir*=-1;else{sortKey=key;sortDir=1;}renderTable();}
 
-function statusClass(s) {
-  if (s === "Done") return "s-done";
-  if (s === "In Progress") return "s-inprog";
-  return "s-todo";
-}
-
-function priorityClass(p) {
-  if (p === "High") return "p-high";
-  if (p === "Low") return "p-low";
-  return "p-med";
-}
-
-function cycleStatus(id) {
-  const a = assignments.find(x => x.id === id);
-  if (!a) return;
-  const cycle = ["Not Started", "In Progress", "Done"];
-  a.status = cycle[(cycle.indexOf(a.status) + 1) % 3];
-  renderTable();
-  scheduleSave();
-}
-
-function sortBy(key) {
-  if (sortKey === key) sortDir *= -1;
-  else { sortKey = key; sortDir = 1; }
-  renderTable();
-}
-
-function renderTable() {
-  const search = document.getElementById("searchInput").value.toLowerCase();
-  const sFilter = document.getElementById("filterStatus").value;
-  const pFilter = document.getElementById("filterPriority").value;
-
-  let list = assignments.filter(a => {
-    if (!activeFilters.has(a.class)) return false;
-    if (search && !a.name.toLowerCase().includes(search) && !a.class.toLowerCase().includes(search)) return false;
-    if (sFilter && a.status !== sFilter) return false;
-    if (pFilter && a.priority !== pFilter) return false;
-    return true;
+function renderTable(){
+  const search=document.getElementById("searchInput").value.toLowerCase();
+  const sF=document.getElementById("filterStatus").value,pF=document.getElementById("filterPriority").value;
+  let list=assignments.filter(a=>{
+    if(!activeFilters.has(a.class))return false;
+    if(search&&!a.name.toLowerCase().includes(search)&&!a.class.toLowerCase().includes(search))return false;
+    if(sF&&a.status!==sF)return false;if(pF&&a.priority!==pF)return false;return true;
   });
-
-  list.sort((a, b) => {
-    let av = a[sortKey] || "", bv = b[sortKey] || "";
-    if (sortKey === "due") { av = av || "9999"; bv = bv || "9999"; }
-    return av < bv ? -sortDir : av > bv ? sortDir : 0;
-  });
-
-  const tbody = document.getElementById("tableBody");
-  document.getElementById("emptyState").style.display = list.length ? "none" : "block";
-
-  tbody.innerHTML = list.map(a => {
-    const meta = getClassMeta(a.class);
-    return `<tr class="${a.status === 'Done' ? 'done-row' : ''}" onclick="openEdit(${a.id})">
-      <td><div class="assignment-name">${a.name}</div>${a.notes ? `<div style="font-size:0.68rem;color:var(--muted);margin-top:3px">${a.notes}</div>` : ""}</td>
-      <td><span class="class-badge" style="background:${meta.color}22;color:${meta.color}">${meta.short}</span></td>
+  list.sort((a,b)=>{let av=a[sortKey]||"",bv=b[sortKey]||"";if(sortKey==="due"){av=av||"9999";bv=bv||"9999";}return av<bv?-sortDir:av>bv?sortDir:0;});
+  const tbody=document.getElementById("tableBody");
+  document.getElementById("emptyState").style.display=list.length?"none":"block";
+  tbody.innerHTML=list.map(a=>{
+    const m=getClassMeta(a.class);
+    return`<tr class="${a.status==="Done"?"done-row":""}" onclick="openEdit(${a.id})">
+      <td><div class="assignment-name">${a.name}</div>${a.notes?`<div style="font-size:.68rem;color:var(--muted);margin-top:3px">${a.notes}</div>`:""}</td>
+      <td><span class="class-badge" style="background:${m.color}22;color:${m.color}">${m.short}</span></td>
       <td>${formatDue(a.due)}</td>
       <td><span class="priority-badge ${priorityClass(a.priority)}">${a.priority}</span></td>
-      <td onclick="event.stopPropagation(); cycleStatus(${a.id})">
-        <span class="status-badge ${statusClass(a.status)}">
-          <span class="status-dot"></span>${a.status}
-        </span>
-      </td>
-      <td onclick="event.stopPropagation()">
-        <button class="del-btn" onclick="deleteA(${a.id})">✕</button>
-      </td>
+      <td onclick="event.stopPropagation();cycleStatus(${a.id})"><span class="status-badge ${statusClass(a.status)}"><span class="status-dot"></span>${a.status}</span></td>
+      <td onclick="event.stopPropagation()"><button class="del-btn" onclick="deleteA(${a.id})">✕</button></td>
     </tr>`;
   }).join("");
-
   updateStats();
 }
 
-function updateStats() {
-  document.getElementById("stat-total").textContent = assignments.length;
-  document.getElementById("stat-inprog").textContent = assignments.filter(a => a.status === "In Progress").length;
-  document.getElementById("stat-done").textContent = assignments.filter(a => a.status === "Done").length;
+function updateStats(){
+  document.getElementById("stat-total").textContent=assignments.length;
+  document.getElementById("stat-inprog").textContent=assignments.filter(a=>a.status==="In Progress").length;
+  document.getElementById("stat-done").textContent=assignments.filter(a=>a.status==="Done").length;
 }
 
-function renderClassFilters() {
-  const wrap = document.getElementById("classFilters");
-  wrap.innerHTML = CLASSES.map(c => `
-    <div class="class-tag ${activeFilters.has(c.name) ? '' : 'inactive'}" onclick="toggleFilter('${c.name}')">
-      <span class="class-dot" style="background:${c.color}"></span>${c.short}
-    </div>`).join("");
+function renderClassFilters(){
+  document.getElementById("classFilters").innerHTML=CLASSES.map(c=>`
+    <div class="class-tag ${activeFilters.has(c.name)?"":"inactive"}" onclick="toggleFilter('${c.name}')">
+      <span class="class-dot" style="background:${c.color}"></span>${c.short}</div>`).join("");
 }
 
-function toggleFilter(name) {
-  if (activeFilters.has(name)) activeFilters.delete(name);
-  else activeFilters.add(name);
-  renderClassFilters();
-  renderTable();
-}
+function toggleFilter(n){if(activeFilters.has(n))activeFilters.delete(n);else activeFilters.add(n);renderClassFilters();renderTable();}
 
-function openModal() {
-  editingId = null;
-  document.getElementById("modalTitle").textContent = "New Assignment";
-  document.getElementById("f-name").value = "";
-  document.getElementById("f-class").value = "";
-  document.getElementById("f-due").value = "";
-  document.getElementById("f-priority").value = "Medium";
-  document.getElementById("f-status").value = "Not Started";
-  document.getElementById("f-notes").value = "";
+function openModal(){
+  editingId=null;document.getElementById("modalTitle").textContent="New Assignment";
+  ["f-name","f-class","f-due","f-notes"].forEach(id=>document.getElementById(id).value="");
+  document.getElementById("f-priority").value="Medium";document.getElementById("f-status").value="Not Started";
   document.getElementById("modalOverlay").classList.add("open");
 }
 
-function openEdit(id) {
-  const a = assignments.find(x => x.id === id);
-  if (!a) return;
-  editingId = id;
-  document.getElementById("modalTitle").textContent = "Edit Assignment";
-  document.getElementById("f-name").value = a.name;
-  document.getElementById("f-class").value = a.class;
-  document.getElementById("f-due").value = a.due;
-  document.getElementById("f-priority").value = a.priority;
-  document.getElementById("f-status").value = a.status;
-  document.getElementById("f-notes").value = a.notes;
+function openEdit(id){
+  const a=assignments.find(x=>x.id===id);if(!a)return;editingId=id;
+  document.getElementById("modalTitle").textContent="Edit Assignment";
+  document.getElementById("f-name").value=a.name;document.getElementById("f-class").value=a.class;
+  document.getElementById("f-due").value=a.due;document.getElementById("f-priority").value=a.priority;
+  document.getElementById("f-status").value=a.status;document.getElementById("f-notes").value=a.notes;
   document.getElementById("modalOverlay").classList.add("open");
 }
 
-function closeModal() {
-  document.getElementById("modalOverlay").classList.remove("open");
+function closeModal(){document.getElementById("modalOverlay").classList.remove("open");}
+
+function saveAssignment(){
+  const name=document.getElementById("f-name").value.trim(),cls=document.getElementById("f-class").value;
+  if(!name||!cls){alert("Please fill in the Assignment Name and Class.");return;}
+  const obj={name,class:cls,due:document.getElementById("f-due").value,priority:document.getElementById("f-priority").value,status:document.getElementById("f-status").value,notes:document.getElementById("f-notes").value.trim()};
+  if(editingId){const idx=assignments.findIndex(a=>a.id===editingId);assignments[idx]={...assignments[idx],...obj};}
+  else assignments.push({id:nextId++,...obj});
+  closeModal();renderTable();scheduleSave();
 }
 
-function saveAssignment() {
-  const name = document.getElementById("f-name").value.trim();
-  const cls = document.getElementById("f-class").value;
-  if (!name || !cls) { alert("Please fill in the Assignment Name and Class."); return; }
-  const obj = {
-    name, class: cls,
-    due: document.getElementById("f-due").value,
-    priority: document.getElementById("f-priority").value,
-    status: document.getElementById("f-status").value,
-    notes: document.getElementById("f-notes").value.trim(),
-  };
-  if (editingId) {
-    const idx = assignments.findIndex(a => a.id === editingId);
-    assignments[idx] = { ...assignments[idx], ...obj };
-  } else {
-    assignments.push({ id: nextId++, ...obj });
+function deleteA(id){assignments=assignments.filter(a=>a.id!==id);renderTable();scheduleSave();}
+document.getElementById("modalOverlay").addEventListener("click",function(e){if(e.target===this)closeModal();});
+
+// Clear Google Sheets and reload fresh with corrected data
+async function initWithReset(){
+  setSyncState("syncing","Loading from Google Sheets...");
+  try{
+    const res=await fetch(API_URL+"?action=getAll");
+    const data=await res.json();
+    // Always reload seed since we corrected the data
+    assignments=SEED.map(a=>({...a}));nextId=Math.max(...assignments.map(a=>a.id))+1;
+    await saveToSheets();
+    document.getElementById("loadingState").style.display="none";
+    setSyncState("synced","Synced with Google Sheets ✓");
+    renderClassFilters();renderTable();
+  }catch(err){
+    assignments=SEED.map(a=>({...a}));nextId=Math.max(...assignments.map(a=>a.id))+1;
+    document.getElementById("loadingState").style.display="none";
+    setSyncState("error","Could not connect — showing local data");
+    renderClassFilters();renderTable();
   }
-  closeModal();
-  renderTable();
-  scheduleSave();
 }
-
-function deleteA(id) {
-  assignments = assignments.filter(a => a.id !== id);
-  renderTable();
-  scheduleSave();
-}
-
-document.getElementById("modalOverlay").addEventListener("click", function(e) {
-  if (e.target === this) closeModal();
-});
-
-loadFromSheets();
+initWithReset();
 </script>
 </body>
 </html>
